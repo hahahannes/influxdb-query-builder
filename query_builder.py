@@ -36,25 +36,4 @@ class QueryBuilder():
     
     def check_field_value_type(self, field_name):
         pass
-
-if __name__ == "__main__":
-    query = "SELECT * FROM \"measurement\" WHERE field > ? AND field = ? AND field < ? AND field > ?"
-    query_builder = QueryBuilder(query)
-
-    # If you know the type that the parameter should have
     
-    # String
-    user_input = "untrusted_string"
-    query_builder.setString(user_input)
-
-    # Integer
-    user_input = 0
-    query_builder.setInt(user_input)
-
-    # Integer that comes in as string, for example if coming as query parameter
-    user_input = "0" 
-    query_builder.setInt(user_input)
-
-    # Float 
-    user_input = 1.0
-    query_builder.setFloat(user_input)
