@@ -1,6 +1,10 @@
+import requests 
+
 class QueryBuilder():
-    def __init__(self, query):
+    def __init__(self, query, url, db):
         self.query = query 
+        self.url = url 
+        self.db = db
 
     def setString(self, value):
         """
@@ -35,8 +39,9 @@ class QueryBuilder():
             value = value.replace(escape_pair[0], escape_pair[1])
         return value
 
-    def execute(self):
-        pass
+    def execute(self,query):
+        response = requests.post(self.url, params='db={db}&q={query}'.format(db=self.db, query=query)).json()
+        return response
     
     def convert_to_int(self, value):
         """
@@ -58,11 +63,20 @@ class QueryBuilder():
         except ValueError as e:
             return False
     
-    def check_field_value_type(self, field_name):
-        query = "SHOW FIELD KEYS"
+    def check_field_value_type(self, field_name, measurement): 
+        """
+        Get the type of a field, in order to convert user input, for example a integer that is formatted as a string from a query parameter
+        """
+        query = "SHOW FIELD KEYS FROM \"{measurement}\"".format(measurement=measurement)
+        response = self.execute(query)
+        fields = response["results"][0]["series"][0]["values"]
+        for field in fields: 
+            if field[0] == field_name:
+                return field[1]
+        return None 
 
-    def set_field_value(self, field_name, field_value):
-        type_of_field = self.check_field_value_type(field_name)
+    def set_field_value(self, field_name, field_value, measurement):
+        type_of_field = self.check_field_value_type(field_name, measurement)
         if type_of_field is "string":
             escaped_string = self.escape(field_value)
             self.query = self.query.replace()

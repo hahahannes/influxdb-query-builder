@@ -15,7 +15,7 @@ If you know the type that the parameter should have
 ```python
 query = "SELECT * FROM \"measurement\" WHERE field > ? AND field = ? AND field < ? AND field > ?"
 
-query_builder = QueryBuilder(query)
+query_builder = QueryBuilder(query, influxdb_url, db)
    
 # String
 user_input = "untrusted_string"
@@ -42,7 +42,7 @@ If you dont know the type of a field and want to add field names and field value
 ```python
 query = "SELECT * FROM \"measurement\" WHERE field > ?"
 
-query_builder = QueryBuilder(query)
+query_builder = QueryBuilder(query, influxdb_url, db)
    
 user_input_field_value = "untrusted_string"
 
@@ -53,8 +53,11 @@ If you dont know the type of a field and want to add field names and field value
 ```python
 query = "SELECT * FROM \"measurement\" WHERE ? > ?"
 
-query_builder = QueryBuilder(query)
+query_builder = QueryBuilder(query, influxdb_url, db)
    
 user_input_field_value = "untrusted_string"
 user_input_field_name = "untrusted_string"
+
+query_builder.set_field_value(user_input_field_name, user_input_field_value, measurement_id)
+
 ```
